@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+</head>
+<body>
+   <div class="overlay flex">
+
+           <div class="login-window">
+            <form action="/login" method="post">
+            <input type="text" placeholder="email">
+            <input type="text" placeholder="password">
+           </form>
+           </div>
+                       
+           <div class="signup-window">
+            <form action="/login" method="post">
+            <input type="text" placeholder="email">
+            <input type="text" placeholder="password">
+           </form>
+           </div>
+     
+   </div> 
+   <div class="container "> 
+    <div class="nav-bar">
+        <a class="nav-item" href="/home" style="color:rgb(0, 119, 255);">Home</a>
+        <a class="nav-item" href="/about">About</a>
+        <div class="nav-item">
+            <button id="signup">
+               Sign up 
+            </button>
+            <button id="login">
+                Log in 
+             </button>
+             
+        </div>
+    
+        <div class="svg nav-item settings ">
+            <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3 9.11011V14.8801C3 17.0001 3 17.0001 5 18.3501L10.5 21.5301C11.33 22.0101 12.68 22.0101 13.5 21.5301L19 18.3501C21 17.0001 21 17.0001 21 14.8901V9.11011C21 7.00011 21 7.00011 19 5.65011L13.5 2.47011C12.68 1.99011 11.33 1.99011 10.5 2.47011L5 5.65011C3 7.00011 3 7.00011 3 9.11011Z" stroke="rgb(0, 119, 255)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="rgb(0, 119, 255)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+        </div>    
+    </div>
+    <div class="settings-box">
+      
+    </div>
+    <div >
+        <p class="Heading">
+         Translation <br> Utility
+        </p>
+        
+    </div>
+
+
+    <div class="main-container center">
+        
+        <div class="lang-search">
+         <div >   
+            <button class="svg close">
+                <svg width="40px" height="40px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z" fill="#0F1729"></path> </g></svg>  
+            </button> 
+             
+          <div class="search-box">
+           <input class="search-bar" type="text" placeholder="Search">  
+           <button class="svg">
+            <svg width="35px" height="38px" viewBox="0 0 24.00 24.00" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M16.6725 16.6412L21 21M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+           </button> 
+          </div>
+          </div>
+          <div class="lang-items">
+  
+          </div>
+        </div>
+        <div class="inputs-container">
+        <div class="box">
+           <div class="language center">
+            <span>Detect Language</span>
+            <svg class="down"width="20px" height="20px" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#0077ff" stroke="#0077ff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M512 768l448-512H64z" fill="<svg width=" 256px"="" height="256px" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M903.232 256l56.768 50.432L512 768 64 306.432 120.768 256 512 659.072z" fill="rgb(0, 119, 255)"></path></g>"&gt;</path></g></svg>
+          </div>
+           <div class="text-box">
+            <textarea value="" class="input-area" placeholder="Enter text to translate">
+            </textarea>
+           </div>
+        </div>
+        <div class="box output">
+           <div class="language center">
+            <span>Select Language</span>
+            <svg class="down"width="20px" height="20px" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#0077ff" stroke="#0077ff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M512 768l448-512H64z" fill="<svg width=" 256px"="" height="256px" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M903.232 256l56.768 50.432L512 768 64 306.432 120.768 256 512 659.072z" fill="rgb(0, 119, 255)"></path></g>"&gt;</path></g></svg>  
+        </div>
+           <div class="text-box">
+            <textarea value="" class="input-area" placeholder="Translation here" readonly>
+            </textarea>    
+           </div>
+        </div>
+    </div>
+    </div>
+    <div class="footer center">
+       
+        <div></div>
+     
+    </div>
+   </div>
+   <script type="text/javascript" src="js/index.js"></script>
+</body>
+</html>

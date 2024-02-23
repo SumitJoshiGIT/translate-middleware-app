@@ -1,0 +1,72 @@
+.user-form{
+    display: flex;
+    height:clamp(400px,70vh,500px);
+    align-items: center;
+    width: clamp(280px,25vw,600px);
+    padding:20px;
+    border:0.5px black solid;
+    border-radius:2px;
+    font-family: monospace;
+    flex-direction: column;
+    z-index:1;
+}
+
+.signup-dialog-close{
+    background-color: white;
+    border:none;
+    position:relative;
+    
+}
+.user-form form{
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.form-header{
+    color:rgb(0, 119, 255);
+    font-size: 30px;
+   
+    margin:2px;
+}
+
+.user-form-submit{
+     margin-top: 20px;
+     font-weight:500;
+     padding:10px;
+     color:white;
+     margin-bottom: 0;
+     border-radius: 20px;
+     background-color: rgb(0, 119, 255);
+     border:none;
+     font-family: 'Courier New', Courier, monospace;
+     font-size: 17px;
+     width: clamp(240px,22vw,560px);
+  
+}
+.user-form-input{
+     font-family: 'Courier New', Courier, monospace;
+     margin-bottom:14px;
+     width: clamp(240px,22vw,560px);
+     padding:10px;
+}
+.user-form-overlay{
+    width: 100vw;
+    top:0;
+    left:0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position:fixed;
+    z-index:0;
+}
+
+.google-sign-in{
+   color:rgb(0, 119, 255);
+   background-color: white;
+   margin-top: 10px;
+   border:2px rgb(0, 119, 255) solid;
+
+}
