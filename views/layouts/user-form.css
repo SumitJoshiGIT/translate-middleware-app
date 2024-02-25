@@ -1,3 +1,6 @@
+.hidden{
+    display: none !important; 
+}
 .user-form{
     display: flex;
     height:clamp(400px,70vh,500px);
@@ -51,6 +54,8 @@
      width: clamp(240px,22vw,560px);
      padding:10px;
 }
+
+
 .user-form-overlay{
     width: 100vw;
     top:0;

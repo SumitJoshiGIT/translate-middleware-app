@@ -1,46 +1,48 @@
 const path=require('path')
-const ValidateUser=require(path.join('../','utils','utils'))
+const Users=require(path.join("../",'database','Users'))
 
-function signup(req,res,next){
-    const response=JSON(parser(req.body));
-    const result=ValidateUser(username=response["username"],response["password"])
-    if(result){
-       res.setHeader({"response-type":"applicaton/text"});
-       res.session.user_id=result.user_id;
-       res.send("Validated");
-      }
-    else if(result===false){
-         res.send("User already exists");
-    }  
-    else{
-        req.session.user_id=createUser(username,password);
-        res.setHeader({"Location":'/home'});
-        res.send();   
-      }}
+async function signupPage(req,res,next){
+    return res.render('signup');
+}
 
+async function loginPage(req,res,next){
+    return res.render('login');
 
-function login(req,res,next){ 
-        if(ValidateUser(session=req.session)){
-          res.send("User is already logged in");
+}
+async function signup(req,res,next){
+        try{
+         const user=new Users(req.body); 
+         req.session.user_id=await user.save();
+         res.setHeader({"Location":'/home'});
+         res.send();   
         }
-        else{
-         const response=JSON(parser(req.body));
-         const result=Validate(username=response["username"],password=response["password"]||true)
-         if (result){
-            req.session.user=result.user_id
+       catch(err){
+           console.log(err);    
+       }
+      }
+
+async function userExists(req,res,next){
+  if(req.session.user_id){
+    result=await Users.findByID(req.session.user_id);
+    if(result){res.redirect("/home");return;} 
+    else next();  
+  }
+}
+async function login(req,res,next){ 
+
+        
+        result=await Users.findOne(req.body);
+        if (result){
+            req.session.user=result._id
             res.setHeader({"Location":'/home'});
             res.send();
          }
          else if(result===false){
-          res.send("Wrong password for given username.");
+          res.send("Wrong password/username."); 
          }
-         else{
-          res.send("Given username does not exist.");
-         }}
-    
     }      
 
 module.exports={
-         signup,login
+         signup,login,signupPage,loginPage,userExists
 
 }   

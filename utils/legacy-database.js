@@ -3,7 +3,7 @@ SECRET=process.env.MSECRET
 const mongodb=require('mongodb');
 const MongoClient=new mongodb.MongoClient(SECRET);
 let cl=null;
-
+console.log(process.env.MSECRET)
 const dbConnect=(callback)=>
 MongoClient.connect()
 .then((client)=>{
