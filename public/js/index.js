@@ -21,6 +21,7 @@ const User={
       });  
     }
 }
+
 const langDialog={
    langDialog:document.querySelector('.lang-search'),
    inputs:document.querySelector('.inputs-container'),
@@ -32,12 +33,11 @@ const langDialog={
    show(vis=true){
     this.langDialog.style.display=(vis)?"block":"none";
     this.inputs.style.display=(vis)?"none":"block";
-    
+    console.log("log initiated");
    },
 
    SelectLanguage(event){
-    if (event.target.classList.contains('lang-option')){
-      
+    if (event.target.classList.contains('lang-option')){      
       parent=(state)?outputBox:inputBox;
       parent.lang=event.target.textContent;
       parent.code=event.target.getAttribute("value");
@@ -63,24 +63,22 @@ const langDialog={
    query(){
 
    },
-   init(){
+   async init(){
     this.inputs.addEventListener('click',this.SelectLanguage.bind(this));        
-    
+    this.close.addEventListener('click',()=>this.show(false));
+    this.searchBar.addEventListener('change',this.query.bind(this))
+    console.log(this.close)  
     params={target: 'en'};
     const fullUrl = new URL(`${'https://localhost/getlang'}?${new URLSearchParams(params)}`);
-    fetch(fullUrl, {
+    const data=await fetch(fullUrl, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
       'X-CSRF-Token': csrfToken
     })
-    .then((response)=>{return response.json()})
-    .then()  
-    .catch(()=>{})  
-
-    this.close.addEventListener('click',()=>this.show(false));
-    this.searchBar.addEventListener('change',this.query.bind(this))
+    data=await data.json()
+    
   }
 }
 

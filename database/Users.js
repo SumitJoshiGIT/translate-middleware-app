@@ -16,10 +16,10 @@ let User=new mongoose.Schema(
      password:{
         type:String,
         required:true
-        ,validate:{
+        /*,validate:{
             validator:pass=>{return /[A-Za-z\d@$!%*?&]{8,}/.test(pass);}
             ,message:props=>0
-        }     
+        } */    
     },
      username:{
         type:String,

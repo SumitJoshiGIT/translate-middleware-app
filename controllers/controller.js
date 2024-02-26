@@ -2,19 +2,19 @@ const path=require('path')
 const Users=require(path.join("../",'database','Users'))
 
 async function signupPage(req,res,next){
-    return res.render('signup');
+    return res.render('signup',{layout:"main"});
 }
 
 async function loginPage(req,res,next){
-    return res.render('login');
+    return res.render('signin',{layout:"main"});
 
 }
 async function signup(req,res,next){
-        try{
+              
+  try{
          const user=new Users(req.body); 
          req.session.user_id=await user.save();
-         res.setHeader({"Location":'/home'});
-         res.send();   
+         res.redirect("/home");   
         }
        catch(err){
            console.log(err);    
@@ -22,27 +22,26 @@ async function signup(req,res,next){
       }
 
 async function userExists(req,res,next){
-  if(req.session.user_id){
-    result=await Users.findByID(req.session.user_id);
-    if(result){res.redirect("/home");return;} 
-    else next();  
-  }
+  if(req.user)res.redirect("/home");
+  else next();  
 }
-async function login(req,res,next){ 
 
-        
+async function login(req,res,next){ 
+        console.log("login")
+        console.log(req.session);       
         result=await Users.findOne(req.body);
+        console.log(result);
         if (result){
-            req.session.user=result._id
-            res.setHeader({"Location":'/home'});
-            res.send();
+            req.session.user_id=result._id
+            console.log("In session")
+            res.redirect("/home")
          }
          else if(result===false){
-          res.send("Wrong password/username."); 
+          res.send("Wrong password/username.");
+
          }
     }      
 
 module.exports={
          signup,login,signupPage,loginPage,userExists
-
 }   
