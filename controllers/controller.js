@@ -1,6 +1,14 @@
 const path=require('path')
 const Users=require(path.join("../",'database','Users'))
 
+async function checkCSRF(req,res,next){
+    if(req.body.csrfToken==req.session.csrfToken){
+       delete req.body.csrfToken
+       next();
+    }
+    else res.status(401).send("Unauthorized Access Detected");
+}
+
 async function signupPage(req,res,next){
     return res.render('signup',{layout:"main"});
 }
@@ -43,5 +51,5 @@ async function login(req,res,next){
     }      
 
 module.exports={
-         signup,login,signupPage,loginPage,userExists
+         signup,login,signupPage,loginPage,userExists,checkCSRF
 }   

@@ -28,7 +28,7 @@ async function detect(q,key){
    let params=new URLSearchParams({
          q:q
          })
-   let response=await request('detect','POST',key,params)
+   let response=await request('detect','GET',key,params)
    return response;
  }
  
@@ -38,7 +38,7 @@ async function translate(q,s,t,key){
          target: t,
          source: s})
  
-   let response=await request('translate','POST',key,params)
+   let response=await request('translate','GET',key,params)
    
    return await response.json();
  }

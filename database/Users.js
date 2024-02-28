@@ -33,11 +33,19 @@ let User=new mongoose.Schema(
      updatedAt:{type:Date,
         default:()=>Date.now()
     },
-     keys:[String],
-     active_key:{
-        type:Number,
-        default:-1
-    }
+     keys:{
+        type:Object,
+        default:{},
+        validate:{
+            validator:v=>{
+                for(key in v){
+                    
+
+                }
+                
+            }
+        }
+     }
     }
 )
 
