@@ -1,6 +1,3 @@
-require('dontenv').config();
-const key=process.env.key
-
 async function request(url,method,key,params=''){
     
   let headers={method: method, // or 'GET' depending on your API    
@@ -24,7 +21,7 @@ async function request(url,method,key,params=''){
         return {};}
     };
 
-async function detect(q,key){
+async function detect({q,key}){
    let params=new URLSearchParams({
          q:q
          })
@@ -32,7 +29,7 @@ async function detect(q,key){
    return response;
  }
  
-async function translate(q,s,t,key){
+async function translate({q,s,t,key}){
    let params=new URLSearchParams({
          q: q,
          target: t,
@@ -43,7 +40,7 @@ async function translate(q,s,t,key){
    return await response.json();
  }
  
-async function getlang(key){
+async function getlang({key}){
    let response=await request('languages','GET',key)
    console.log(response);
   }

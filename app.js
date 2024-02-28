@@ -5,6 +5,8 @@ const bodyparser=require('body-parser');
 const app=express();
 const getroutes=require('./routes/get')
 const authroutes=require('./routes/auth')
+const apiroutes=require('./routes/api-routes')
+
 const {engine}=require('express-handlebars')
 const session=require('express-session');
 const SECRET=process.env.MSECRET
@@ -27,6 +29,7 @@ app.use(express.static('public'))
 
 app.use(getroutes);
 app.use(authroutes);
+app.use(apiroutes)
 
 
 

@@ -121,6 +121,7 @@
 
 
 .user-form-overlay{
+    backdrop-filter: blur(3px);
     width: 100vw;
     top:0;
     left:0;

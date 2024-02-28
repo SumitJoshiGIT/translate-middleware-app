@@ -1,5 +1,31 @@
 const csrfToken =undefined;
 const blurwindow=document.querySelector("blur-window");
+const url=window.location.hostname;
+const csrf=document.querySelector('[name="csrfToken"]').value
+
+async function bodyReq(obj){
+  const response= await fetch(url+"/detect",
+       {method:'GET',
+       headers:{
+        'X-CSRF-Token':csrf
+       },
+       body:JSON.stringify(obj)
+     }  
+   );
+   return await response.json()   
+
+ }
+ async function getLang(){
+  const response=await fetch(url+"/getLang",
+         {method:'GET',
+         headers:{
+          'X-CSRF-Token':csrf
+         }
+       }  
+     );
+  return await response.json()   
+
+   }
 const User={
       signedin:false,
       loggedin:false,
@@ -51,7 +77,6 @@ const langDialog={
    },
 
    parseLang(response){
-       response=JSON.parse(response)['data']['languages']
        if(response){
         for (x in response){
           this.languages[x['language']]=x['name'];
@@ -68,16 +93,8 @@ const langDialog={
     this.close.addEventListener('click',()=>this.show(false));
     this.searchBar.addEventListener('change',this.query.bind(this))
     console.log(this.close)  
-    params={target: 'en'};
-    const fullUrl = new URL(`${'https://localhost/getlang'}?${new URLSearchParams(params)}`);
-    const data=await fetch(fullUrl, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      'X-CSRF-Token': csrfToken
-    })
-    data=await data.json()
+   
+   // data=await data.json()
     
   }
 }
@@ -105,22 +122,11 @@ const inputBox={
    langBox:document.querySelector('.language'),
    lang:"Detect Language",
    code:"dl",
-   
-   translate(params,csrfToken){
-    const fullUrl = new URL(`${'https://localhost/translate'}?${new URLSearchParams(params)}`);
-    
-    return fetch(fullUrl, {
-        method: 'POST', 
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(params),
-        'X-CSRF-Token': csrfToken
-      })
-      .then((response)=>{return response.json()})
-      .then((data)=>{return JSON.parse(data)})
-      .catch((error)=>{return false});
-   },
+   async Translate(params){
+      const data=await bodyReq(params);
+      outputBox.area.textContent=data; 
+   }
+  ,
    fetchOutput(){
     if(outputBox.code==null)return;
     params={q:this.area.textContent} 
@@ -135,7 +141,7 @@ const inputBox={
     else{
     params['s']=this.code,     
     params['e']=outputBox.code
-    output.area.textContent=this.translate(params,csrfToken)[''];     
+    output.area.textContent=this.translate(params)[''];     
 }
    }, 
    init(){
