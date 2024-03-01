@@ -17,14 +17,18 @@
 }
 
 .key-list{
-
+    width:95% ;
     min-height: 50px;
-    min-width: 280px;
+  
 }
 .keys{
+    width:clamp(260px
+    
+    , 24vw, 550px);
     position: relative;
     right:-10px;
-    padding:20px;
+    padding:20px 0px;
+    
 }
 
 
@@ -69,6 +73,7 @@
     position:relative;
     
 }
+
 .user-form form{
     
     display: flex;

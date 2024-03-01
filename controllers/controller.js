@@ -1,12 +1,17 @@
 const path=require('path')
 const Users=require(path.join("../",'database','Users'))
+const bcrypt=require('bcrypt')
 
 async function checkCSRF(req,res,next){
+    console.log(req.body)
     if(req.body.csrfToken==req.session.csrfToken){
        delete req.body.csrfToken
        next();
+       console.log("pass")
     }
-    else res.status(401).send("Unauthorized Access Detected");
+    else{ res.status(401).send("Unauthorized Access Detected");
+         console.log(req.session.csrfToken)    
+}
 }
 
 async function signupPage(req,res,next){
@@ -19,7 +24,7 @@ async function loginPage(req,res,next){
 }
 async function signup(req,res,next){
               
-  try{
+  try{   req.body.password=bcrypt.hash(req.body.password,12); 
          const user=new Users(req.body); 
          req.session.user_id=await user.save();
          res.redirect("/home");   
@@ -35,8 +40,7 @@ async function userExists(req,res,next){
 }
 
 async function login(req,res,next){ 
-        console.log("login")
-        console.log(req.session);       
+        req.body.password=bcrypt.hash(req.body.password,12); 
         result=await Users.findOne(req.body);
         console.log(result);
         if (result){

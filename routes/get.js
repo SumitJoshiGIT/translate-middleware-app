@@ -1,6 +1,8 @@
 const exp=require('express')
 const path=require('path')
 const {checkUser,relayCSRF}=require(path.join('../','controllers','common'))
+const {getLangData}=require('../controllers/api-post.js')
+
 const router=exp.Router();
 
 
@@ -12,9 +14,8 @@ router.get("/",(req,res,next)=>{
   })
 
 router.get("/home",(req,res,next)=>{
-  console.log(req.csrfToken) 
-  
-  res.render('index',{layout:'main',user:req.user,csrfToken:req.csrfToken});
+   
+  res.render('index',{layout:'main',user:req.user,csrfToken:req.csrfToken,lang:getLangData()});
   })
   
 router.get("/about",(req,res,next)=>{

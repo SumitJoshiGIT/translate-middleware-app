@@ -1,6 +1,6 @@
-async function request(url,method,key,params=''){
-    
-  let headers={method: method, // or 'GET' depending on your API    
+async function request(endpoint,method,key,params=''){
+  
+  let options={method: method, // or 'GET' depending on your API    
      headers:{
        'Content-Type':'application/json',
        'Accept-Encoding': 'application/gzip',
@@ -8,12 +8,13 @@ async function request(url,method,key,params=''){
        'X-RapidAPI-Host': 'google-translate1.p.rapidapi.com'
      },
      };
-   if(params)headers.body= JSON.stringify(params);   
    try{
-        url=`https://google-translate1.p.rapidapi.com/language/translate/v2/${url}?${params.toString()}`
+        const url=new URL(`https://google-translate1.p.rapidapi.com/language/translate/v2${endpoint}`)
+        Object.keys(params).map(k=>url.searchParams.append(k,params[k]))
         console.log(url)
-        let response=await fetch(url,headers)
+        let response=await fetch(url,options)
         response=await response.json(); 
+        console.log(response);
         return response;
       }
       catch(err){
@@ -21,13 +22,6 @@ async function request(url,method,key,params=''){
         return {};}
     };
 
-async function detect({q,key}){
-   let params=new URLSearchParams({
-         q:q
-         })
-   let response=await request('detect','GET',key,params)
-   return response;
- }
  
 async function translate({q,s,t,key}){
    let params=new URLSearchParams({
@@ -35,14 +29,14 @@ async function translate({q,s,t,key}){
          target: t,
          source: s})
  
-   let response=await request('translate','GET',key,params)
+   let response=await request('','GET',key,params)
    
    return await response.json();
  }
  
 async function getlang({key}){
-   let response=await request('languages','GET',key)
-   console.log(response);
+   let response=await request('/languages','GET',key,params={target:'en'})
+   return response
   }
  
-module.exports={detect,translate,getlang}
+module.exports={translate,getlang}

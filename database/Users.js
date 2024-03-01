@@ -38,10 +38,10 @@ let User=new mongoose.Schema(
         default:{},
         validate:{
             validator:v=>{
-                for(key in v){
-                    if(!(v[key]=="0"||v[key]=="1"))return false;
-                    if(!(/^[a-zA-Z0-9-_]{24}$/.test(key)))return false;
-                }
+                console.log(v);
+                //for(key in v){
+                  //  if(!(v[key]=="0"||v[key]=="1"))return false;
+                    //}
                 return true;
             }
         }

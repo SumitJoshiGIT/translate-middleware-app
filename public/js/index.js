@@ -1,73 +1,45 @@
 const csrfToken =undefined;
 const blurwindow=document.querySelector("blur-window");
-const url=window.location.hostname;
+
 const csrf=document.querySelector('[name="csrfToken"]').value
 
 async function bodyReq(obj){
-  const response= await fetch(url+"/detect",
+  const url = new URL(window.location.origin+"/translate");
+  Object.keys(obj).forEach(key => url.searchParams.append(key,obj[key]));
+  let response= await fetch(url,
        {method:'GET',
        headers:{
         'X-CSRF-Token':csrf
-       },
-       body:JSON.stringify(obj)
-     }  
+       }   
+      }  
    );
-   return await response.json()   
-
+   response= await response.json()   
+   console.log(response)
  }
- async function getLang(){
-  const response=await fetch(url+"/getLang",
-         {method:'GET',
-         headers:{
-          'X-CSRF-Token':csrf
-         }
-       }  
-     );
-  return await response.json()   
 
-   }
-const User={
-      signedin:false,
-      loggedin:false,
-      signupWindow:document.querySelector(".signup-window"),
-      LoginWindow:document.querySelector("login-window"),
-      signup:document.querySelector(".signup"),
-      login:document.querySelector(".login"),
-    
-      show(q){
-        this.blurwindow.classList.remove("hidden");
-        const k=(q)?this.signupWindow:this.LoginWindow
-        k.remove("hidden")     
-      },
-      init(){
-      this.signup.addEventListener('click',(event)=>{
-      }); 
-      this.login.addEventListener('click',(event)=>{
-          
-      });  
-    }
-}
+
 
 const langDialog={
    langDialog:document.querySelector('.lang-search'),
-   inputs:document.querySelector('.inputs-container'),
-   close:document.querySelector('.close'),
+   langOverlay:document.querySelector('.lang-overlay'),
+   inputs:document.querySelector('.lang-items'),
+   close:document.querySelector('.lang-search .close'),
    searchBar:document.querySelector('.search-box'),
    languages:{},
    state:null,
-   
+   query(){},
    show(vis=true){
-    this.langDialog.style.display=(vis)?"block":"none";
-    this.inputs.style.display=(vis)?"none":"block";
-    console.log("log initiated");
+    this.langOverlay.style.display=(vis)?"flex":"none"; 
    },
 
    SelectLanguage(event){
     if (event.target.classList.contains('lang-option')){      
-      parent=(state)?outputBox:inputBox;
+      console.log(this.state)
+      parent=(this.state)?outputBox:inputBox;
       parent.lang=event.target.textContent;
       parent.code=event.target.getAttribute("value");
-      langDialog.textContent=parent.lang;
+      parent.language.textContent=parent.lang;
+      this.show(false);
     }
    },
 
@@ -85,9 +57,6 @@ const langDialog={
         }
        }
    },
-   query(){
-
-   },
    async init(){
     this.inputs.addEventListener('click',this.SelectLanguage.bind(this));        
     this.close.addEventListener('click',()=>this.show(false));
@@ -100,9 +69,9 @@ const langDialog={
 }
 
 const outputBox={
-    area:document.querySelector('.output > .input-area'),
+    area:document.querySelector('.output  .input-area'),
     langBox:document.querySelector('.output > .language'),
-
+    language:  document.querySelector('.output > .language span'),
     lang:"Select Language",
     code:null,
     
@@ -120,38 +89,36 @@ const outputBox={
 const inputBox={
    area:document.querySelector('.input-area'),
    langBox:document.querySelector('.language'),
+   language:document.querySelector('.language span'),
    lang:"Detect Language",
    code:"dl",
    async Translate(params){
+      console.log(params)
       const data=await bodyReq(params);
-      outputBox.area.textContent=data; 
+      outputBox.area.textContent=data;
+      return data['data']['translations'][0] 
    }
   ,
-   fetchOutput(){
+   async fetchOutput(){
+    const code=inputBox.code
     if(outputBox.code==null)return;
-    params={q:this.area.textContent} 
-    if (this.code=='dl'){
-        const lang=(translate(params));
-        if (lang){
-            this.code=lang[''],
-            this.lang=lang['']
-        }
-        this.fetchOutput();
-    }
-    else{
-    params['s']=this.code,     
-    params['e']=outputBox.code
-    output.area.textContent=this.translate(params)[''];     
+    const params={q:this.area.textContent} 
+    params['s']=this.code
+    if(code)params['e']=outputBox.code;
+    console.log(params);
+    const data=await this.Translate(params); 
+    output.area.textContent=data['translatedText'];
+    if(!code)inputBox.code=data["detectedSourceLanguage"]    
 }
-   }, 
+   , 
    init(){
-    this.area.addEventListener('input',this.fetchOutput)
+    this.area.addEventListener('input',this.fetchOutput.bind(this))
     this.langBox.addEventListener('click',()=>{
      langDialog.state=0;
      langDialog.show();
    })
    }  
-}
+  }
 
 langDialog.init();
 outputBox.init();

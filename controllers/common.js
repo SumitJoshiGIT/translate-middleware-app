@@ -6,7 +6,7 @@ const { v4: uuidv4 } = require('uuid');
 async function checkUser(req,res,next){
     if(req.session.user_id){
       result=await Users.findById({"_id":req.session.user_id});
-      req.user=result;
+      req.user=result.toObject();
     } 
     next();
   }
