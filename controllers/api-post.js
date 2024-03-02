@@ -10,44 +10,46 @@ async function validate(req,res){
    if(req.session.user_id){
       let User=await Users.findById(req.session.user_id);
       if(User){
-         console.log(User);
-
-         User=Object.keys(User.keys)
-         if(User){
-          for (key in User)if(User[key]==0)delete User.key;
-          req.body.key=User.keys[Math.floor(Math.random()*User.keys.length)];
-          return true; 
+         const keys=User.keys['1'];
+         if(keys){
+          return keys[Math.floor(Math.random()*(keys.length-1))];
          }
       }
-     }            
-   
-   else res.status(401).send("Unauthorized Access");  
+     }              
    return false;
    }
     
 async function Translate(req,res,next){
- try{
-   if(validate(req,res)){
-   try{  
-    const response =await (translate(req.query))
-    res.send(response)
-   }
-   catch(err){
-    res.send(err);
+   try{
+   const val=await validate(req,res)  
+   if(val){
+    try{  
+      const response =await (translate(req.query,val))
+      console.log(response)
+      res.json(({'response':response}))
+    }
+    catch(err){
+      console.log(err);
+      res.json({error:err});
  }}
- else res.status(401).send();
+ else res.status(401).json('{error:"Validation Failed"}');
  }
  catch(err){console.log(err)}
 }
  
 
 
-async function GetLang(){
+async function GetLang(cache=false){
+   
+   if (cache){
+      obj=cache;
+      return cache;}
    const key=process.env['translate-key']   
    try{     
     const response =await getlang({key}) 
-    obj=(response['data']['languages']);
-    obj=obj=Object.values(obj)
+    obj=(response['data']);
+    obj.time=new Date();
+    return obj;
    }
     catch(err){ 
     console.log(err);
@@ -56,7 +58,7 @@ async function GetLang(){
 };
 
 function getLangData(){
-   return obj;
+   return obj['languages'];
 }
 
 

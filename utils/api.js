@@ -1,42 +1,40 @@
-async function request(endpoint,method,key,params=''){
+require('dotenv').config();
+
+async function request(endpoint,method,key,params='',bodyParams=false){
+  const url=new URL(`https://google-translate1.p.rapidapi.com/language/translate/v2${endpoint}`)  
+  const searchParams=new URLSearchParams()
+  Object.keys(params).map(k=>searchParams.set(k,params[k]))
   
   let options={method: method, // or 'GET' depending on your API    
      headers:{
-       'Content-Type':'application/json',
+      'content-type': 'application/x-www-form-urlencoded',
        'Accept-Encoding': 'application/gzip',
        'X-RapidAPI-Key': key,
        'X-RapidAPI-Host': 'google-translate1.p.rapidapi.com'
      },
      };
-   try{
-        const url=new URL(`https://google-translate1.p.rapidapi.com/language/translate/v2${endpoint}`)
-        Object.keys(params).map(k=>url.searchParams.append(k,params[k]))
-        console.log(url)
+    if(bodyParams)options.body=searchParams; 
+    else url.searchParams=searchParams;
+    try{
         let response=await fetch(url,options)
         response=await response.json(); 
-        console.log(response);
         return response;
       }
-      catch(err){
+    catch(err){
         console.log(err);
-        return {};}
+        return {error:"Internal Error"};}
     };
 
  
-async function translate({q,s,t,key}){
-   let params=new URLSearchParams({
-         q: q,
-         target: t,
-         source: s})
- 
-   let response=await request('','GET',key,params)
-   
-   return await response.json();
+async function translate(params,key){
+   console.log(params,key);                 
+   let response=await request('','POST',key,params,bodyParams=true)
+   return response;
  }
  
 async function getlang({key}){
    let response=await request('/languages','GET',key,params={target:'en'})
    return response
   }
- 
+
 module.exports={translate,getlang}

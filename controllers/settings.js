@@ -1,17 +1,12 @@
 const path=require('path')
 const Users=require(path.join("../",'database','Users'))
+
 async function updateKeys(req,res,next){
-    const keys=req.body.key
-    const active=req.body.active
-    if(keys instanceof Array && active instanceof Array){
-    const obj={};
-    console.log(req.body)
-    for(let i=0;i<keys.length;i++){
-       if(active[i]==1|| active[i]==0) 
-       obj[keys[i]]=Number(active[i]);
-       else return res.send("failure");     
-    
-    }
+  const keys=req.body.key
+  const active=req.body.active
+  if(keys instanceof Array && active instanceof Array){
+    const obj={0:[],1:[]};
+    for(let i=0;i<keys.length;i++)obj[Number(active[i]==1)].push((keys[i]));
     const user=await Users.findById(req.session.user_id);
     user.keys=obj;
     try{
