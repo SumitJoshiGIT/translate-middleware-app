@@ -15,11 +15,11 @@ let User=new mongoose.Schema(
     },  
      password:{
         type:String,
-        required:true
-        /*,validate:{
-            validator:pass=>{return /[A-Za-z\d@$!%*?&]{8,}/.test(pass);}
-            ,message:props=>0
-        } */    
+       /* validate:{
+            validator:pass=>{return (pass)?true:this.gid?true:false; }//{return /[A-Za-z\d@$!%*?&]{8,}/.test(pass);}
+            ,message:props=>{console.log(props)}
+        }    ,*/ 
+        default:""
     },
      username:{
         type:String,
@@ -45,6 +45,11 @@ let User=new mongoose.Schema(
                 return true;
             }
         }
+     },
+  
+     gid:{
+        type:String,
+        default:""
      }
     }
 )

@@ -1,8 +1,27 @@
-const csrfToken =undefined;
-const blurwindow=document.querySelector("blur-window");
-
-const csrf=document.querySelector('[name="csrfToken"]').value
-
+//const csrf=document.querySelector('iframe [name="csrfToken"]').value
+const flash=document.querySelector('.flash-message');
+const flashText=flash.querySelector('p');
+const flashMessage=(content)=>{
+  flash.classList.remove('hidden');
+  flashText.textContent=content;
+  const Timer=setTimeout(()=>{
+    flash.classList.add('hidden');
+    flashText.textContent="";
+  },15000);
+  flash.querySelector('.close').addEventListener('click',()=>{
+    flash.classList.add('hidden');
+    flashText.textContent="";
+    clearTimeout(Timer);  
+  }
+  )
+}
+function copyText(){
+  navigator.clipboard.writeText(this.area.value)   
+  .catch(err => {
+    console.error('Could not copy text: ', err);
+    fallbackCopyTextToClipboard(this.area.value);
+  });;
+}
 
 function throttle(func,timeout){
   let lt=0;
@@ -26,6 +45,13 @@ function debounce(func,timeout=300){
 
 }
 
+function redirectToGoogle(){
+  const googleUrl=new URL('https://google.com/search');
+ if(this.area.value){ 
+  googleUrl.searchParams.append('q',this.area.value)
+  setTimeout(window.open(googleUrl.toString(),'_blank'),200);  
+ }
+}
 
 
 async function bodyReq(obj){
@@ -34,7 +60,7 @@ async function bodyReq(obj){
   let response= await fetch(url,
        {method:'GET',
        headers:{
-        'X-CSRF-Token':csrf
+        'CSRF-Token':csrf
        }   
       }  
    );
@@ -61,6 +87,7 @@ const langDialog={
    searchBar:document.querySelector('.search-box'),
    languages:document.querySelectorAll('.lang-items .lang-option'),
    state:null,
+
    query(){
 
    },
@@ -102,13 +129,13 @@ const langDialog={
       k=el.textContent.toLowerCase()
       this.langDict[el.getAttribute("id")]=k;
       this.langNames.push(k);     
+   
     });
     this.languages=obj;
-
     this.inputs.addEventListener('click',this.SelectLanguage.bind(this));        
     this.close.addEventListener('click',()=>this.show(false));
     this.searchBar.addEventListener('change',this.query.bind(this))
-    console.log(this.close)  
+    
    
    // data=await data.json()
     
@@ -122,8 +149,14 @@ const outputBox={
     lang:"Select Language",
     code:null,
     
+   copyText:document.querySelector('.output .copy-text'),
+    google:document.querySelector('.output .google-search'),
+    
     init(){
+      this.copyText.addEventListener('click',copyText.bind(this))
+   
       this.area.textContent="";
+      this.google.addEventListener('click',redirectToGoogle.bind(this))
       this.langBox.addEventListener('click',()=>{
         langDialog.state=1;
         langDialog.show(true);
@@ -138,6 +171,7 @@ const inputBox={
    language:document.querySelector('.input .language span'),
    lang:"Detect Language",
    code:null,
+   google:document.querySelector('.input .google-search'),
    async Translate(params){
       const data=await bodyReq(params);
       console.log(data)
@@ -167,12 +201,14 @@ const inputBox={
 }
    , 
    init(){
+    
     this.area.textContent="";
     this.area.addEventListener('input',debounce(this.fetchOutput.bind(this)))
     this.langBox.addEventListener('click',()=>{
      langDialog.state=0;
      langDialog.show();
    })
+   this.google.addEventListener('click',redirectToGoogle.bind(this))
    }  
   }
 

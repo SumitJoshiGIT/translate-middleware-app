@@ -17,7 +17,7 @@ async function validate(req,res){
       }
      }              
    return false;
-   }
+    }
     
 async function Translate(req,res,next){
    try{
@@ -34,7 +34,7 @@ async function Translate(req,res,next){
  }}
  else res.status(401).json('{error:"Validation Failed"}');
  }
- catch(err){console.log(err)}
+ catch(err){res.json({success:false,message:"Error executing operation"})}
 }
  
 

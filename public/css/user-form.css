@@ -39,6 +39,7 @@
 }
 ::-webkit-scrollbar-thumb {
     background: #888; /* Color of the scroll handle */
+    height:20px;
 }
 .option{
     display:flex;
@@ -47,7 +48,7 @@
     margin-bottom: 10px;      
 }
 .option-header{
-    color: rgb(0, 119, 255);
+    color: #0077ff;
     font-family: 'Courier New', Courier, monospace;
     
 
