@@ -34,7 +34,7 @@ let User=new mongoose.Schema(
         default:()=>Date.now()
     },
      keys:{
-        type:Object,
+        type:Array,
         default:{},
         validate:{
             validator:v=>{
@@ -46,6 +46,15 @@ let User=new mongoose.Schema(
             }
         }
      },
+     active:{type:Number,
+             default:0,
+             validate:{
+                 validator:v=>{
+                     return (v>=0)?true:false;
+                 },
+                 message:props=>{return props}
+             }
+    },
   
      gid:{
         type:String,

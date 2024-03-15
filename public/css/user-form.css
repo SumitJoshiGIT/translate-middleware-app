@@ -1,6 +1,7 @@
 .hidden{
     display: none !important; 
 }
+
 .user-form{
     background-color: white;
     display: flex;
@@ -16,6 +17,23 @@
     overflow-x: hidden;
 }
 
+
+.confirm-window{
+    font-size: large;
+    display: flex;
+    padding: 13px;
+    z-index: 2;
+    border-radius: 5px;
+    flex-direction: column;
+    width: clamp(350px, 28vw, 700px);
+    position: absolute;
+    border: 1px black solid;
+    height: 150px;
+    background:white;
+}
+.forgot-password{
+    color:rgb(0, 119, 255);
+}
 .key-list{
     width:95% ;
     min-height: 50px;
@@ -103,6 +121,7 @@
      width: clamp(240px,22vw,560px);
   
 }
+
 .user-form-input{
      font-family: 'Courier New', Courier, monospace;
      margin-bottom:14px;
@@ -121,7 +140,7 @@
     margin-bottom:3px;
     width: clamp(220px,20vw,500px);
     padding:2px;
-    height: 11px;
+    height: 15px;
     
 }
 
@@ -145,4 +164,16 @@
    margin-top: 10px;
    border:2px rgb(0, 119, 255) solid;
 
+}
+.confirm-button{
+    
+    margin: 5px;
+    width: 100px;
+    font-size: 16px;
+    padding: 2px;
+}
+.confirm-div{
+    display: flex;
+    width: 100%;
+    justify-content: right;
 }

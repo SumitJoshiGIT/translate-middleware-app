@@ -1,7 +1,9 @@
 //const csrf=document.querySelector('iframe [name="csrfToken"]').value
 const flash=document.querySelector('.flash-message');
 const flashText=flash.querySelector('p');
-const flashMessage=(content)=>{
+const _csrf = document.querySelector('input[name="csrfToken"]').value
+
+function flashMessage(content){
   flash.classList.remove('hidden');
   flashText.textContent=content;
   const Timer=setTimeout(()=>{
@@ -15,6 +17,7 @@ const flashMessage=(content)=>{
   }
   )
 }
+
 function copyText(){
   navigator.clipboard.writeText(this.area.value)   
   .catch(err => {
@@ -42,7 +45,6 @@ function debounce(func,timeout=300){
       },timeout);
      }
 
-
 }
 
 function redirectToGoogle(){
@@ -51,6 +53,21 @@ function redirectToGoogle(){
   googleUrl.searchParams.append('q',this.area.value)
   setTimeout(window.open(googleUrl.toString(),'_blank'),200);  
  }
+}
+
+async function PostRequest(endpoint, body) {
+  response = await fetch(endpoint, {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: {
+      'Content-Type': 'application/json'
+      , 'CSRF-Token': _csrf
+    },
+    body: JSON.stringify(body)
+  })
+  response = await response.json();
+  flashMessage(response.message);
+  return response.success;
 }
 
 

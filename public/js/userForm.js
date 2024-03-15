@@ -1,157 +1,164 @@
-const signinButton=document.getElementById('signin');
-const signupButton=document.getElementById('signup');
+const signinButton = document.getElementById('signin');
+const signupButton = document.getElementById('signup');
 
-const signup=document.querySelector('.signup-form');
+const signup = document.querySelector('.signup-form');
 
-const overlay=document.querySelector('.auth-overlay');
-const signin=document.querySelector('.signin-form'); 
-const signinForm=signin.querySelector('form');
-const signupForm=signup.querySelector('form');
+const overlay = document.querySelector('.auth-overlay');
+const signin = document.querySelector('.signin-form');
+const signinForm = signin.querySelector('form');
+const signupForm = signup.querySelector('form');
 
-const signinSubmit=signinForm.querySelector('.user-form-submit');
-const signupSubmit=signupForm.querySelector('.user-form-submit');
+const signinSubmit = signinForm.querySelector('.user-form-submit');
+const signupSubmit = signupForm.querySelector('.user-form-submit');
 
-const signinFormParent=signinForm.parentElement;
-const signupFormParent=signupForm.parentElement;
-const googleSignin=document.querySelectorAll('.google-sign-in'); 
+const signinFormParent = signinForm.parentElement;
+const signupFormParent = signupForm.parentElement;
+const googleSignin = document.querySelectorAll('.google-sign-in');
+const forgotPassword = document.querySelector('.forgot-password');
+//const resetPassword=document.querySelector('reset-password');
 
-googleSignin.forEach(el=>{el.addEventListener('click',(event)=>{
-   window.open('/auth/oauth','oauth','width=500 height=700')
-   window.addEventListener('message',handleMessage);
-
-   
-})})
-
-async function SignIn(event){
-  FormData(signinForm)
-
-}
-async function SignUp(event){
-  data=FormData(signupForm)
-}
-
-async function sendOTP(event){
-  event.preventDefault()
-  const otp=signupFormParent.querySelector('.otp').value
-  const _csrf=signupForm.querySelector('input[name="csrfToken"]').value
-
-  if(/^\d{6}$/.test(otp)){
-   try{ 
-    response=await fetch('/auth/signup/verify',{
-      method:'POST',
-      credentials:'same-origin',
-      headers:{
-        'Content-Type':'application/json'
-        ,'CSRF-Token':_csrf
-      },
-      body:JSON.stringify({OTP:otp})
-    })
-    response=await response.json();
-    console.log(response)
-    flashMessage(response.message);
-    if(response.success){
-        setTimeout(()=>window.location.href='/',2000);
-    }
-   
-  }
-  catch(error){
-    flashMessage(error)
-  }
-  }   
-  else{flashMessage('OTP must be a 6 digit number')}
-}
-signupForm.addEventListener('submit',async function(event){
+forgotPassword.addEventListener('click', async function (event) {
   event.preventDefault();
-  const data={password:signupForm.querySelector('input[name="password"]').value,
-              email:signupForm.querySelector('input[name="email"]').value}
-  _csrf=signupForm.querySelector('input[name="csrfToken"]').value
- console.log(_csrf);
-  const response=await fetch("/auth/signup",{
-    method:'POST',
-    credentials:'same-origin',
-    headers:{
-      'Content-Type':'application/json'
-       ,'CSRF-Token':_csrf
-    },
-    body:JSON.stringify(data)
-    });
+  event.stopPropagation();
+  const email = signinForm.querySelector('input[name="email"]').value;
+  if (!(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email))) return flashMessage("Invalid Email address.");
+  await changeToPass(signinFormParent);
 
-    const json=await response.json();;
-    if(json.success){
-         const otpForm=`<form action="/auth/signup/verify" method="POST">
-         <input class="user-form-input otp" type="text" placeholder="Enter OTP">
-         <input  class="user-form-submit"  type="submit" value="Verify OTP"></input></form>`
-         signupFormParent.innerHTML=(otpForm);
-         signupFormParent.querySelector('.user-form-submit').addEventListener('click',sendOTP);
-        /*setTimeout(()=>window.location.href='/',2000);*/
-      }
-    flashMessage(json.message);
-    });
-  
+})
 
-signinForm.addEventListener('submit',async function(event){
-    event.preventDefault();
-    const data={password:signinForm.querySelector('input[name="password"]').value,
-    email:signinForm.querySelector('input[name="email"]').value,}
-    _csrf=signinForm.querySelector('input[name="csrfToken"]').value
-    try{
-     const response=await fetch("/auth/signin",{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'CSRF-Token':_csrf
-      },
-      body:JSON.stringify(data)
-    })
+googleSignin.forEach(el => {
+  el.addEventListener('click', (event) => {
+    window.open('/auth/oauth', 'oauth', 'width=500 height=700')
+    window.addEventListener('message', handleMessage);
+  })
+})
 
-    const json=await response.json();
-    flashMessage(json.message)
-    if(json.success){
-      setTimeout(()=>window.location.href='/',2000);
+
+
+
+
+async function sendOTP(event) {
+  event.preventDefault()
+  const otp = event.target.parentElement.querySelector('.otp').value;
+  const body = { OTP: otp }
+
+  if (/^\d{6}$/.test(otp)) {
+    try {
+      const response = await PostRequest('/auth/verify', body)
+      if (response) setTimeout(() => window.location.href = '/', 2000);
+
     }
+    catch (error) {
+      flashMessage(error)
     }
-    catch(err){
-      flashMessage(err)
-    }
-
+  }
+  elseflashMessage('OTP must be a 6 digit number');
 }
 
+
+async function changeToVerify(parent) {
+  const otpForm = `<form action="/auth/verify" method="POST">
+  <input class="user-form-input otp" type="text" placeholder="Enter OTP">
+  <button  class="user-form-submit">Verify OTP</button></form>`
+  await changeChildren(otpForm, parent);
+
+  parent.querySelector('.user-form-submit').addEventListener('click', throttle(async (event) => {
+    event.preventDefault();
+    const body = { OTP: parent.querySelector('.otp').value };
+    const json = await PostRequest('/auth/verify', body);
+    if (json) setTimeout(() => {window.href=('/')}, 1000);
+  }
+  ),300);
+}
+async function changeToPass(parent) {
+  const email = signinForm.querySelector('input[name="email"]').value;
+  const passForm = `<form action="/" method="POST">
+  <input class="user-form-input" type="text" placeholder="Enter new password">
+  <button  class="user-form-submit"  type="button">Confirm</button></form>`
+  await changeChildren(passForm, parent);
+  async function Submit(event) {
+    event.preventDefault();
+    const password = event.target.parentElement.querySelector('.user-form-input').value;
+    const body = { password: password, email: email }
+    const resp = await PostRequest('/auth/reset', body)
+    if (resp) changeToVerify(parent);
+    event.target.removeEventListener('click', Submit);
+  }
+  parent.querySelector('.user-form-submit').addEventListener('click', throttle(Submit,300));
+}
+
+async function changeChildren(children, parentElement) {
+  parentElement.innerHTML = (children);
+}
+signupForm.addEventListener('submit', throttle(async function (event) {
+  event.preventDefault();
+  const email = signinForm.querySelector('input[name="email"]').value.trim();
+
+  if (!(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email))) return flashMessage("Invalid Email address.");
+  const data = {
+    password: signupForm.querySelector('input[name="password"]').value,
+    email: signupForm.querySelector('input[name="email"]').value
+  }
+
+  const json = PostRequest("/auth/signup", data);
+  if (json) changeToVerify(signupFormParent);
+},300));
+
+
+signinForm.addEventListener('submit',throttle(async function (event) {
+  event.preventDefault();
+  email = signinForm.querySelector('input[name="email"]').value.trim();
+  console.log(email);
+  if (!(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email))) return flashMessage("Invalid Email address.");
+  const data = {
+    password: signinForm.querySelector('input[name="password"]').value,
+    email: signinForm.querySelector('input[name="email"]').value,
+  }
+  try {
+    const json = await PostRequest("/auth/signin", data)
+    if (json) setTimeout(() => window.location.href = '/', 2000);
+  }
+  catch (err) { flashMessage(err); }
+},300
+)
 );
 
-let state=-1
-signupButton.addEventListener('click',(event)=>{
+let state = -1;
+signupButton.addEventListener('click', (event) => {
   overlay.classList.remove('hidden');
-  if(state==-1);signin.classList.add('hidden');  
+  if (state == -1); signin.classList.add('hidden');
   signup.classList.remove('hidden');
-  state=1;
+  state = 1;
 });
 
-function handleMessage(event){
+function handleMessage(event) {
 
   console.log(event);
-  if(event.data.verified==true)
-   if(window.oauth)window.oauth.close();
-   window.removeEventListener('message',handleMessage);
-  
+  if (event.data.verified == true)
+    window.removeEventListener('message', handleMessage);
+  flashMessage("Signed in successfully.");
+  setTimeout(() => window.location.href = "/");
 }
 
 
-signinButton.addEventListener('click',(event)=>{
-    overlay.classList.remove('hidden');
-    if(state==1);signup.classList.add('hidden');
-    signin.classList.remove('hidden');
-    state=-1;
-  });
-  
-signup.querySelector('.close').addEventListener('click',(event)=>{
-  overlay.classList.add('hidden');
-  signupFormParent.innerHTML="";
-  signupFormParent.appendChild(signupForm);
-  signupForm.reset();  
+signinButton.addEventListener('click', (event) => {
+  overlay.classList.remove('hidden');
+  if (state == 1); signup.classList.add('hidden');
+  signin.classList.remove('hidden');
+  state = -1;
 });
 
-signin.querySelector('.close').addEventListener('click',(event)=>{
-    overlay.classList.add('hidden');
-    signinForm.reset();
+signup.querySelector('.close').addEventListener('click', (event) => {
+  overlay.classList.add('hidden');
+  signupFormParent.innerHTML = "";
+  signupFormParent.appendChild(signupForm);
+  signupForm.reset();
+});
 
-  });
+signin.querySelector('.close').addEventListener('click', (event) => {
+  overlay.classList.add('hidden');
+  signinFormParent.innerHTML = "";
+  signinFormParent.appendChild(signinForm);
+  signinForm.reset();
+
+});

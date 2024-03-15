@@ -1,44 +1,58 @@
-const settings=document.querySelector('.settings')
-const settingsDialog=document.querySelector('.settings-dialog')
-const close=settingsDialog.querySelector('.close')
-let extras=new Set();
-const submit=settingsDialog.querySelector(".user-form-submit");
-settings.addEventListener('click',(event)=>settingsDialog.classList.remove('hidden'));
-close.addEventListener('click',(ev)=>{
-    settingsDialog.classList.add('hidden');
-    extras.forEach(el=>el.remove())
-    extras.clear();
+const settings = document.querySelector('.settings')
+const settingsDialog = document.querySelector('.settings-dialog')
+const close = settingsDialog.querySelector('.user-form .close')
+const extras = new Set();
+const submit = settingsDialog.querySelector("form .user-form-submit");
+const logoutButton=document.querySelector('.logout');
+const deleteButton=document.querySelector('.delete');
+const confirmWindow=document.querySelector('.confirm-window');
+const confirmWindowTask=confirmWindow.querySelector('.task-name');
+const confirmButton=confirmWindow.querySelector('.confirm-button');
+
+
+
+
+async function deleteUser(event){
+  const response=await PostRequest('/auth/delete',{})
+  if(response)setTimeout(()=>{window.href=('/');},2000)
+  confirmWindow.classList.add('hidden');
+}
+async function logout(event){
+  const response=await PostRequest('/auth/logout',{})
+  if(response)setTimeout(()=>{window.href('/');},2000)
+  confirmWindow.classList.add('hidden');
+}
+settings.addEventListener('click',(event) => settingsDialog.classList.remove('hidden'));
+close.addEventListener('click', (ev) => {
+  settingsDialog.classList.add('hidden');
+  extras.forEach(el => el.remove())
+  extras.clear();
 })
-const dropDowns=document.querySelectorAll('.keys')
-const checkboxes=document.querySelectorAll('.key input[name="active"]')
+const dropDowns = document.querySelectorAll('.keys')
+const checkboxes = document.querySelectorAll('.key input[name="active"]')
 
-checkboxes.forEach(el=>{
-    el.addEventListener('check',(ev)=>{
-            el.nextSibling.checked=!ev.target.checked;                                                           
-         })
-})
-
-dropDowns.forEach(el=>{
-    el.querySelector('.drop-down').addEventListener('click',(ev)=>{
-        const cl=el.querySelector('.key-list').classList;
-        if(cl.contains('hidden'))cl.remove('hidden');
-        else cl.add('hidden')
-    })
+dropDowns.forEach(el => {
+  el.querySelector('.drop-down').addEventListener('click', (ev) => {
+    const cl = el.querySelector('.key-list').classList;
+    if (cl.contains('hidden')) cl.remove('hidden');
+    else cl.add('hidden')
+  })
 
 })
 
-const addButton=document.querySelector('#add-key')
-const keyList=document.querySelector('.api-keys')
+const addButton = document.querySelector('#add-key')
+const keyList = document.querySelector('.api-keys')
 
-addButton.addEventListener('click',addNode)
-function removeNode(el){
-   return (ev)=>el.parentNode.remove();
-   
-      }
+addButton.addEventListener('click', addNode)
 
-document.querySelectorAll('.retract-key').forEach((el)=>el.addEventListener('click',removeNode(el))
-)
-const key=`
+function removeNode(el) {
+  return (ev) => el.parentNode.remove();
+}
+
+document.querySelectorAll('.retract-key').forEach((el) => el.addEventListener('click', removeNode(el)))
+
+async function addNode() {
+  const key = `
 <div class="key-input">
 <input class="user-key-input" name="key[]" value="" type="text">
 <button type="button" class="add-key retract-key">
@@ -48,19 +62,45 @@ const key=`
 <input type="radio" name="active" value=1 class="activate-key">
 </label>
 </div>`
+  let clone = document.createElement('div', { class: 'key' });
+  clone.innerHTML = key;
+  keyList.append(clone);
 
-
-async function addNode(){
-let clone=document.createElement('div',{class:'key'});
-clone.innerHTML=key;
-keyList.append(clone);
-
-
-rkey=clone.querySelector('.retract-key')
-rkey.addEventListener('click',removeNode(rkey))            
-extras.add(clone);
+  let rkey = clone.querySelector('.retract-key');
+  rkey.addEventListener('click', removeNode(rkey));
+  extras.add(clone);
 }
 
-submit.addEventListener('click',()=>extras.clear())
+submit.addEventListener('click',throttle(async (event) => {
+  event.preventDefault();
+  const keys = [];
+  keyList.querySelectorAll('input[name="key[]"]').forEach(x => keys.push(x.value));
+  const data = {
+    keys: keys,
+    active: keyList.querySelector('input[name="active"]').value
+  }
+  try {
+    const json = await PostRequest("/keys",data);
+    if (json) extras.clear();
+  }
+  catch (err) {
+    flashMessage(err);
+  }
+}),300);
 
 
+confirmWindow.querySelector('.close').addEventListener(
+  'click',(event) =>{confirmWindow.classList.add('hidden')});
+logoutButton.addEventListener('click', () =>{
+    confirmWindowTask.textContent="Logout?";
+    confirmButton.addEventListener('click',throttle(logout,300));
+    confirmWindow.classList.remove('hidden');
+  })
+
+deleteButton.addEventListener('click', () =>{
+  confirmWindowTask.textContent="delete this account?";
+  confirmButton.addEventListener('click',throttle(deleteUser,300));
+  confirmWindow.classList.remove('hidden');
+
+ 
+})
