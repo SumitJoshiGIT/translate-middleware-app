@@ -71,13 +71,13 @@ async function addNode() {
   extras.add(clone);
 }
 
-submit.addEventListener('click',throttle(async (event) => {
+submit.addEventListener('click',(async (event) => {
   event.preventDefault();
   const keys = [];
   keyList.querySelectorAll('input[name="key[]"]').forEach(x => keys.push(x.value));
   const data = {
     keys: keys,
-    active: keyList.querySelector('input[name="active"]').value
+    active: keyList.querySelector('input[name="active"]:checked').value
   }
   try {
     const json = await PostRequest("/keys",data);
@@ -86,7 +86,7 @@ submit.addEventListener('click',throttle(async (event) => {
   catch (err) {
     flashMessage(err);
   }
-}),300);
+}));
 
 
 confirmWindow.querySelector('.close').addEventListener(

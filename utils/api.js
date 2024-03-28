@@ -17,8 +17,10 @@ async function request(endpoint,method,key,params='',bodyParams=false){
     else url.searchParams=searchParams;
     try{
         let response=await fetch(url,options)
+        if(response.status!=201)return {error:(await response.json()).message};
         response=await response.json(); 
         return response;
+
       }
     catch(err){
         console.log(err);

@@ -92,8 +92,8 @@ async function changeChildren(children, parentElement) {
 }
 signupForm.addEventListener('submit', throttle(async function (event) {
   event.preventDefault();
-  const email = signinForm.querySelector('input[name="email"]').value.trim();
-
+  const email = signupForm.querySelector('input[name="email"]').value.trim();
+  
   if (!(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email))) return flashMessage("Invalid Email address.");
   const data = {
     password: signupForm.querySelector('input[name="password"]').value,
@@ -107,7 +107,7 @@ signupForm.addEventListener('submit', throttle(async function (event) {
 
 signinForm.addEventListener('submit',throttle(async function (event) {
   event.preventDefault();
-  email = signinForm.querySelector('input[name="email"]').value.trim();
+  const email = signinForm.querySelector('input[name="email"]').value.trim();
   console.log(email);
   if (!(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email))) return flashMessage("Invalid Email address.");
   const data = {

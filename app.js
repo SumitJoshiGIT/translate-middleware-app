@@ -11,7 +11,7 @@ const apiroutes=require('./routes/api-routes');
 const settingroutes=require('./routes/settings');
 const {GetLangCache,WriteLangCache}=require('./utils/edit-json.js');
 const limit=60*60*1000*24
-const {engine}=require('express-handlebars')
+const {create}=require('express-handlebars')
 const session=require('express-session');
 
 const SECRET=process.env.MSECRET
@@ -35,6 +35,11 @@ async function startserver(){
    app.listen(3000,()=>console.log("server active..."));
   
 }
+const hbs=create({
+   helpers:{
+      eq(v1,v2){return v1==v2;}
+   
+}});
 connectdb(startserver)
 
 app.set('trust proxy', 1);
@@ -59,15 +64,17 @@ app.use(csrf());
 
 
 app.use((req, res, next)=> {
+      console.log(req.user)
       res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self';style-src 'self' 'unsafe-inline' ");
       res.setHeader('X-Frame-Options','DENY');
       
       next();
   })
+  
 app.use(bodyparser.urlencoded({extended:true}))
 app.use(bodyparser.json())
 
-app.engine('handlebars',engine())
+app.engine('handlebars',hbs.engine)
 app.set('view engine','handlebars');
 app.set('views',"./views");
 app.use(express.static('public'))

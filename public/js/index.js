@@ -29,8 +29,9 @@ function copyText(){
 function throttle(func,timeout){
   let lt=0;
   return function(args){
-    const ct=new Date();
-    if(lt-ct>timout){
+    args.preventDefault();
+    const ct=new Date().getTime();
+    if(ct-lt>timeout){
       lt=ct;
       return func(args)
   }}  
@@ -77,7 +78,7 @@ async function bodyReq(obj){
   let response= await fetch(url,
        {method:'GET',
        headers:{
-        'CSRF-Token':csrf
+        'CSRF-Token':_csrf
        }   
       }  
    );
@@ -192,8 +193,13 @@ const inputBox={
    async Translate(params){
       const data=await bodyReq(params);
       console.log(data)
-      return data['response']['data']['translations'][0] 
-   }
+      if (data.error){
+        flashMessage(data.error);
+        return false;
+      }
+      return data['data']['translations'][0];
+   
+    }
   ,
    async fetchOutput(){
     let code=inputBox.code
@@ -207,12 +213,13 @@ const inputBox={
     code=(code==outputBox.code)
     
     const data=code?params.q:await this.Translate(params); 
-    outputBox.area.value=code?data:(data['translatedText'])
-    console.log(data)
-    if(!code){
+    if(data){
+      console.log("what the fuck",data);
+     outputBox.area.value=code?data:(data['translatedText'])
+     if(!code){
       inputBox.code=data["detectedSourceLanguage"]
       inputBox.language.textContent=langDialog.langDict[inputBox.code] 
-    }    
+    }}
   }
   else outputBox.area.value=''
 }

@@ -8,7 +8,6 @@ function generateOTP() {
 }
 async function VerifyOTP(req, res, next) {
   const ver = req.session.verification
-  console.log(ver);
   if (!ver) return res.json({ success: false, message: "Unauthorized Attempt" });
   if (ver.attempts > 3 || Date.now() - ver.time > 10 * 60 * 1000) {
     delete req.session.verification

@@ -6,16 +6,18 @@ const Users=require(path.join("../",'database','Users'))
 let obj=undefined
 
 async function validate(req,res){
-   
-   if(req.session.user_id){
-      let User=await Users.findById(req.session.user_id);
+
+      
+      let User=await Users.findOne(req.user||req.session.user_local);
+      //console.log(User);
       if(User){
-         const keys=User.keys['1'];
+         const keys=User.keys[User.active];
+         console.log(keys);
          if(keys){
-          return keys[Math.floor(Math.random()*(keys.length-1))];
+          return keys;
          }
       }
-     }              
+                   
    return false;
     }
     
@@ -25,8 +27,8 @@ async function Translate(req,res,next){
    if(val){
     try{  
       const response =await (translate(req.query,val))
-      console.log(response)
-      res.json(({'response':response}))
+     
+      res.json(response)
     }
     catch(err){
       console.log(err);
@@ -37,7 +39,6 @@ async function Translate(req,res,next){
  catch(err){res.json({success:false,message:"Error executing operation"})}
 }
  
-
 
 async function GetLang(cache=false){
    

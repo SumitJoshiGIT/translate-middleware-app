@@ -17,7 +17,17 @@
     overflow-x: hidden;
 }
 
-
+.profile-buttons{
+    color: white;
+    font-family: inherit;
+    border-radius: 2px;
+    align-items: center;
+    display: flex;
+    height: 22px;
+    padding: 6px;
+    margin: 4px;
+    background-color: #0077ff;
+}
 .confirm-window{
     font-size: large;
     display: flex;
@@ -136,11 +146,14 @@
 
 }
 .user-key-input{
+    margin-right: 3px;
+    border: 2px;
+    font-size: 9px;
     font-family: 'Courier New', Courier, monospace;
-    margin-bottom:3px;
-    width: clamp(220px,20vw,500px);
-    padding:2px;
-    height: 15px;
+    margin-bottom: 3px;
+    width: clamp(220px, 20vw, 500px);
+    padding: 2px;
+    height: 15.5px;
     
 }
 

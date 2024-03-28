@@ -48,7 +48,22 @@ body{
      margin-top: 3px;
      margin-left: 10px;
     }
+.logout{
+    background-color: #0077ff;
+}
+.user-info{
+    color: white;
+    opacity: 0.8;
+    background: black;
+    margin: 4px;
+    padding: 4px;
+    border-radius: 2px;
 
+}
+.activate-key{    top: -4px;}
+.delete{
+    background-color: rgb(223, 66, 66);
+}
 
 .grid-container{
     display: grid;
@@ -118,7 +133,7 @@ body{
     box-sizing: border-box;
     display:flex;
     width:100vw;
-    padding: 0vw 20px 0vw 10px;
+    padding: 0vw 0px 0vw 10px;
     height:40px;
     flex-direction:row;
     align-items: center;
@@ -225,4 +240,15 @@ overflow: visible;
  background: black;
  border-radius: 4px;
  
+ }
+
+ .flash-message p{
+    text-overflow: ellipsis;
+    text-align: left;
+    text-wrap:nowrap;
+    overflow-x: scroll;
+    overflow-y: clip;
+    height: 26px;
+    width: 100%;
+    padding: 2px;
  }

@@ -15,6 +15,7 @@ router.get("/home",async (req,res,next)=>{
   if(user){
     user=await Users.findOne(user);
     user=(user)?user.toObject():null;
+    console.log(user);
    }
 
   res.render('index',{layout:'main',user:user,csrfToken:req.csrfToken(),lang:getLangData()});
